@@ -10,6 +10,7 @@
 from chessboard import ChessBoard
 from ai import searcher
 import MyButton
+import numpy as np
 # 棋盘基本参数等
 WIDTH = 760
 HEIGHT = 650
@@ -46,7 +47,7 @@ class AI(QtCore.QThread):
     def run(self):
         self.ai = searcher()
         self.ai.board = self.board
-        score, x, y = self.ai.search(2, 2)
+        x, y = self.ai.search(2, 2)
         self.finishSignal.emit(x, y)
 
 

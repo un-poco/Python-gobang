@@ -9,7 +9,7 @@ import sys
 import MyButton
 import DoublePlayerGame
 import gobangGUI
-
+import numpy as np
 
 class Mainwindow(QWidget):
 

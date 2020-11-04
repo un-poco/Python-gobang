@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import *
 import sys
-
+import numpy as np
 
 class Chessman(QLabel):
 
