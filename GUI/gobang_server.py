@@ -6,7 +6,6 @@ import json
 import threading
 import time
 import sys
-from gobang_chessboard import chessboard
 from queue import Queue
 
 
@@ -14,18 +13,16 @@ def server_handle_1(c1, c2):
     # 接受到client1的消息 发送到client2上去
     while True:
         data = c1.recv(1024)
+        print(data)
         time.sleep(1)
-        if not data or data.decode('utf-8') == 'exit':
-            break
         c2.send(('%s' % data.decode('utf-8')).encode('utf-8'))
 
 def server_handle_2(c1, c2):
     # 接受到client1的消息 发送到client2上去
     while True:
         data = c2.recv(1024)
+        print(data)
         time.sleep(1)
-        if not data or data.decode('utf-8') == 'exit':
-            break
         c1.send(('%s' % data.decode('utf-8')).encode('utf-8'))
 
 

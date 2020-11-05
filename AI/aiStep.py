@@ -1,3 +1,4 @@
+# from search import *
 from module.search import *
 import numpy as np
 
