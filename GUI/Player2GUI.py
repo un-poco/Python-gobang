@@ -86,20 +86,33 @@ class GoBang(QWidget):
         t1.start()
         return c
 
+    def data_checkout(self, data):
+        if data == 'r':
+            self.gameover(WHITE)
+        if data == 'c':
+            # 执行重开函数
+            self.piece_now = BLACK
+            self.step = 0
+            for piece in self.pieces:
+                piece.clear()
+            self.chessboard.reset()
+            self.update()
+            return False
+        return True
+
     def client_recv(self):
         '''接收数据'''
         while True:
             try:
                 data = self.c.recv(1024).decode()
-                str_list = data.split(' ')
-                x, y = int(str_list[0]), int(str_list[1])
-
-                self.draw(x, y)
-                self.ai_down = True  # 解锁 允许鼠标点击下棋
+                print(data)
+                if self.data_checkout(data):
+                    str_list = data.split(' ')
+                    x, y = int(str_list[0]), int(str_list[1])
+                    self.draw(x, y)
+                    self.ai_down = True  # 解锁 允许鼠标点击下棋
             except:
                 pass
-
-
 
     def initUI(self):  # UI初始化
 
@@ -269,22 +282,22 @@ class GoBang(QWidget):
 
     # 认输功能键，不知道为什么卡的厉害。人机对战的认输还没写
     def lose(self):
-        self.gameover(BLACK)
+        self.c.send('r'.encode())
+        self.gameover(WHITE)
         self.backSignal.emit()
+
         self.close()
+
 
     # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
     def restart(self):
-        for i in range(15):
-            for j in range(15):
-                x, y = self.coordinate_transform_map2pixel(i, j)
-                self.chessboard.draw_xy(i, j, EMPTY)
-                self.pieces[self.step].setGeometry(x, y, 100, 100)
-        # if self.lbl != None:
-        #     self.lbl.close()
-        self.chessboard.reset
-        # self.close
-        # ex = GoBang()
+        self.piece_now = BLACK
+        self.step = 0
+        for piece in self.pieces:
+            piece.clear()
+        self.chessboard.reset()
+        self.update()
+        self.c.send('c'.encode())
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
