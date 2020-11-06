@@ -1,18 +1,14 @@
-'''
-Gobang GUI by Adrian
-主要设计了人机部分，人人部分没写算法，有一个现成的可以用一下hhh
-'''
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
-sys.path.append("D:\Pyfiles\PY_gobang\AI")
+import os
+sys.path.append("D:/Pyfiles/PY_gobang/AI")
+sys.path.append('D:/Git/PY_gobang/GUI/double_play')
 import MyButton
 import gobangGUI
-import numpy as np
-import double_player_1
+import doublePlayerGUI
 class Mainwindow(QWidget):
-
-    
 
     def __init__(self,parent = None):
         super().__init__(parent)
@@ -34,7 +30,7 @@ class Mainwindow(QWidget):
                      'source/人机对战_normal.png',
                      'source/人机对战_press.png',
                      parent=self)
-        self.singlePlayerBtn.move(250,450)
+        self.singlePlayerBtn.move(250, 450)
 
         self.doublePlayerBtn = MyButton.MyButton('source/双人对战_hover.png',
                      'source/双人对战_normal.png',
@@ -49,7 +45,7 @@ class Mainwindow(QWidget):
 
     def startDoubleGame(self):
         #构建双人对战界面
-        self.doublePlayerGame = double_player_1.GoBang()
+        self.doublePlayerGame = doublePlayerGUI.GoBang()
         #绑定返回界面
         self.doublePlayerGame.backSignal.connect(self.showStartGame)
         

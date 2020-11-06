@@ -3,8 +3,12 @@
 '''
     双人对战GUI设计
 '''
+
 import sys
-sys.path.append("../double_fight/")
+import time
+sys.path.append('D:/Git/PY_gobang/GUI')
+sys.path.append('D:/Git/PY_gobang/GUI/source')
+sys.path.append('D:/Git/PY_gobang/AI')
 from chessboard import ChessBoard
 from ai import searcher
 import MyButton
@@ -68,7 +72,16 @@ class GoBang(QWidget):
         # 设置端口号
         port = 9999
         # 连接服务，指定主机和端口
-        c.connect((host, port))
+        while True:
+            time.sleep(0.5)
+            try:
+                res = c.connect((host, port))
+                print(res)
+                if not res:
+                    print("connect server", res)
+                    break
+            except:
+                print('等待联机')
         t1 = threading.Thread(target=self.client_recv)
         t1.start()
         return c
@@ -80,7 +93,7 @@ class GoBang(QWidget):
                 data = self.c.recv(1024).decode()
                 str_list = data.split(' ')
                 x, y = int(str_list[0]), int(str_list[1])
-                print('xy')
+
                 self.draw(x, y)
                 self.ai_down = True  # 解锁 允许鼠标点击下棋
             except:
@@ -144,11 +157,11 @@ class GoBang(QWidget):
         self.black = QPixmap('source/black.png')  # 黑白棋子
         self.white = QPixmap('source/white.png')
 
-        self.piece_now = BLACK  # 黑棋先行
+        self.piece_now = BLACK
 
 
 
-        self.step = 0  # 步数
+        self.step = 0 # 步数
         self.x, self.y = 1000, 1000
 
 
@@ -159,7 +172,7 @@ class GoBang(QWidget):
             piece.setScaledContents(True)  # 图片大小根据标签大小可变
 
         # self.mouse_point.raise_()  # 鼠标始终在最上层
-        self.ai_down = True  # 主要是为了加锁，当值是False的时候在等待对方下棋，这时候己方鼠标点击失效，要忽略掉 mousePressEvent
+        self.ai_down = False  # 主要是为了加锁，当值是False的时候在等待对方下棋，这时候己方鼠标点击失效，要忽略掉 mousePressEvent
 
         self.setMouseTracking(True)
         self.show()
@@ -182,7 +195,7 @@ class GoBang(QWidget):
     #     # self.lb1.setText(str(e.x()) + ' ' + str(e.y()))
     #     self.mouse_point.move(e.x() - 16, e.y() - 16)
 
-    def mousePressEvent(self, e):  # 玩家1下棋
+    def mousePressEvent(self, e):  # 玩家2下棋
 
         if e.button() == Qt.LeftButton and self.ai_down:
             x, y = e.x(), e.y()  # 鼠标坐标
@@ -207,9 +220,9 @@ class GoBang(QWidget):
 
     # 落子代码
     def draw(self, i, j):
-
         x, y = self.coordinate_transform_map2pixel(i, j)
-
+        print('now now')
+        print(self.piece_now)
         if self.piece_now == BLACK:
             self.pieces[self.step].setPixmap(self.black)  # 放置黑色棋子
             self.piece_now = WHITE
@@ -220,6 +233,7 @@ class GoBang(QWidget):
             self.chessboard.draw_xy(i, j, WHITE)
 
         self.pieces[self.step].setGeometry(x, y, PIECE, PIECE)  # 画出棋子
+
         self.sound_piece.play()  # 落子音效
         self.step += 1  # 步数+1
 
@@ -245,37 +259,19 @@ class GoBang(QWidget):
     def gameover(self, winner):
         if winner == BLACK:
             self.sound_win.play()
-            reply = QMessageBox.question(self, 'You Win!', 'Continue?',
+            reply = QMessageBox.question(self, 'You Lost!', 'Continue?',
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         else:
             self.sound_defeated.play()
-            reply = QMessageBox.question(self, 'You Lost!', 'Continue?',
+            reply = QMessageBox.question(self, 'You Win!', 'Continue?',
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-        if reply == QMessageBox.Yes:  # 复位
-            self.piece_now = BLACK
-            self.mouse_point.setPixmap(self.black)
-            self.step = 0
-            for piece in self.pieces:
-                piece.clear()
-            self.chessboard.reset()
-            self.update()
-        else:
-            self.close()
 
     # 认输功能键，不知道为什么卡的厉害。人机对战的认输还没写
     def lose(self):
-        # if self.gameStatu == False:
-        #     return
-        if self.piece_now == BLACK:
-            self.gameover(WHITE)
-        # elif self.turnChessColor == "white":
-        #     self.lbl = QLabel(self)
-        #     self.lbl.setPixmap(QPixmap("source/黑棋胜利.png"))
-        #     self.lbl.move(150,150)
-        #     self.lbl.show()
-        else:
-            return
+        self.gameover(BLACK)
+        self.backSignal.emit()
+        self.close()
 
     # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
     def restart(self):
@@ -295,7 +291,83 @@ class GoBang(QWidget):
         return
 
 
+class Mainwindow(QWidget):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.resize(760, 650)
+        self.setWindowTitle("gobang")
+        # 设置窗口图标
+        self.setWindowIcon(QIcon("source/icon.ico"))
+
+        # 设置背景图片
+        p = QPalette(self.palette())  # 获得当前的调色板
+        brush = QBrush(QImage("source/gobang_background.png"))
+        p.setBrush(QPalette.Background, brush)  # 设置调色版
+        self.setPalette(p)  # 给窗口设置调色板
+
+        self.singlePlayerBtn = MyButton.MyButton('source/人机对战_hover.png',
+                                                 'source/人机对战_normal.png',
+                                                 'source/人机对战_press.png',
+                                                 parent=self)
+        self.singlePlayerBtn.move(250, 450)
+
+        self.doublePlayerBtn = MyButton.MyButton('source/双人对战_hover.png',
+                                                 'source/双人对战_normal.png',
+                                                 'source/双人对战_press.png',
+                                                 parent=self)
+        self.doublePlayerBtn.move(250, 500)
+
+        # 绑定开始双人游戏信号和槽函数
+        self.doublePlayerBtn.clicked.connect(self.startDoubleGame)
+        self.singlePlayerBtn.clicked.connect(self.startSingleGame)
+
+    def startDoubleGame(self):
+        # 构建双人对战界面
+        self.doublePlayerGame = GoBang()
+        # 绑定返回界面
+        self.doublePlayerGame.backSignal.connect(self.showStartGame)
+
+        self.doublePlayerGame.show()  # 显示游戏界面
+        self.close()
+
+    def startSingleGame(self):
+        self.SingleGame = gobangGUI.GoBang()
+        # self.SingleGame = SinglePlayerGame.SinglePlayerGame()
+        self.SingleGame.backSignal.connect(self.showStartGame2)
+        self.SingleGame.show()
+        self.close()
+
+    # 显示开始界面
+    def showStartGame(self):
+        self.show()
+        self.doublePlayerGame.close()
+
+    def showStartGame2(self):
+        self.show()
+        self.SingleGame.close()
+
+
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+import sys
+import os
+sys.path.append("D:/Pyfiles/PY_gobang/AI")
+sys.path.append('D:/Git/PY_gobang/GUI/double_play')
+import MyButton
+import gobangGUI
+import doublePlayerGUI
+
 if __name__ == '__main__':
+    '''
     app = QApplication(sys.argv)
     ex = GoBang()
     sys.exit(app.exec_())
+    '''
+    import cgitb
+
+    cgitb.enable("text")
+    a = QApplication(sys.argv)
+    m = Mainwindow()
+    m.show()
+    sys.exit(a.exec_())

@@ -4,9 +4,11 @@
     双人对战GUI设计
 '''
 import sys
-sys.path.append("../double_fight/")
+import os
+sys.path.append('D:/Git/PY_gobang/GUI')
+sys.path.append('D:/Git/PY_gobang/GUI/source')
+sys.path.append('D:/Git/PY_gobang/AI')
 from chessboard import ChessBoard
-from ai import searcher
 import MyButton
 import numpy as np
 # 客户端1代码
@@ -27,15 +29,19 @@ BLACK = 1
 WHITE = 2
 
 import sys
+sys.path.append(r'D:\Git\PY_gobang\GUI\double_play')
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon, QPalette, QPainter
 from PyQt5.QtMultimedia import QSound
+import gobang_server
 from PyQt5 import *
 
 
-
+def server():
+    # 执行我自己目录下的服务器
+    os.system('python double_play/gobang_server.py')
 
 
 # ----------------------------------------------------------------------
@@ -52,12 +58,12 @@ class LaBel(QLabel):
 
 class GoBang(QWidget):
     backSignal = QtCore.pyqtSignal()  # 返回信号，用来和主界面连接
-
     def __init__(self):
         super().__init__()
         self.initUI()
+        print(1)
+        threading.Thread(target=server).start()
         self.c = self.init_clent()
-
 
     def init_clent(self): # 客户端初始化
         # 创建 socket 对象
@@ -80,8 +86,6 @@ class GoBang(QWidget):
                 data = self.c.recv(1024).decode()
                 str_list = data.split(' ')
                 x, y = int(str_list[0]), int(str_list[1])
-                print('now:')
-                print(self.piece_now)
                 self.draw(x, y)
                 self.ai_down = True  # 解锁 允许鼠标点击下棋
             except:
@@ -145,11 +149,11 @@ class GoBang(QWidget):
         self.black = QPixmap('source/black.png')  # 黑白棋子
         self.white = QPixmap('source/white.png')
 
-        self.piece_now = BLACK
+        self.piece_now = BLACK  # 黑棋先行
 
 
 
-        self.step = 0 # 步数
+        self.step = 0  # 步数
         self.x, self.y = 1000, 1000
 
 
@@ -160,7 +164,7 @@ class GoBang(QWidget):
             piece.setScaledContents(True)  # 图片大小根据标签大小可变
 
         # self.mouse_point.raise_()  # 鼠标始终在最上层
-        self.ai_down = False  # 主要是为了加锁，当值是False的时候在等待对方下棋，这时候己方鼠标点击失效，要忽略掉 mousePressEvent
+        self.ai_down = True  # 主要是为了加锁，当值是False的时候在等待对方下棋，这时候己方鼠标点击失效，要忽略掉 mousePressEvent
 
         self.setMouseTracking(True)
         self.show()
@@ -168,6 +172,7 @@ class GoBang(QWidget):
     # 返回键设计，回到主菜单
     def goBack(self):
         self.backSignal.emit()
+
         self.close()
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
@@ -179,11 +184,8 @@ class GoBang(QWidget):
         self.drawLines(qp)
         qp.end()
 
-    # def mouseMoveEvent(self, e):  # 黑色棋子随鼠标移动
-    #     # self.lb1.setText(str(e.x()) + ' ' + str(e.y()))
-    #     self.mouse_point.move(e.x() - 16, e.y() - 16)
 
-    def mousePressEvent(self, e):  # 玩家2下棋
+    def mousePressEvent(self, e):  # 玩家1下棋
 
         if e.button() == Qt.LeftButton and self.ai_down:
             x, y = e.x(), e.y()  # 鼠标坐标
@@ -208,20 +210,20 @@ class GoBang(QWidget):
 
     # 落子代码
     def draw(self, i, j):
+
         x, y = self.coordinate_transform_map2pixel(i, j)
-        print('now now')
-        print(self.piece_now)
+
         if self.piece_now == BLACK:
             self.pieces[self.step].setPixmap(self.black)  # 放置黑色棋子
             self.piece_now = WHITE
-            self.chessboard.draw_xy(i, j, BLACK)
+            self.chessboard.draw_
+            xy(i, j, BLACK)
         else:
             self.pieces[self.step].setPixmap(self.white)  # 放置白色棋子
             self.piece_now = BLACK
             self.chessboard.draw_xy(i, j, WHITE)
 
         self.pieces[self.step].setGeometry(x, y, PIECE, PIECE)  # 画出棋子
-
         self.sound_piece.play()  # 落子音效
         self.step += 1  # 步数+1
 
@@ -254,30 +256,12 @@ class GoBang(QWidget):
             reply = QMessageBox.question(self, 'You Lost!', 'Continue?',
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-        if reply == QMessageBox.Yes:  # 复位
-            self.piece_now = BLACK
-            self.mouse_point.setPixmap(self.black)
-            self.step = 0
-            for piece in self.pieces:
-                piece.clear()
-            self.chessboard.reset()
-            self.update()
-        else:
-            self.close()
 
     # 认输功能键，不知道为什么卡的厉害。人机对战的认输还没写
     def lose(self):
-        # if self.gameStatu == False:
-        #     return
-        if self.piece_now == BLACK:
-            self.gameover(WHITE)
-        # elif self.turnChessColor == "white":
-        #     self.lbl = QLabel(self)
-        #     self.lbl.setPixmap(QPixmap("source/黑棋胜利.png"))
-        #     self.lbl.move(150,150)
-        #     self.lbl.show()
-        else:
-            return
+        self.gameover(WHITE)
+        self.backSignal.emit()
+        self.close()
 
     # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
     def restart(self):
@@ -286,11 +270,7 @@ class GoBang(QWidget):
                 x, y = self.coordinate_transform_map2pixel(i, j)
                 self.chessboard.draw_xy(i, j, EMPTY)
                 self.pieces[self.step].setGeometry(x, y, 100, 100)
-        # if self.lbl != None:
-        #     self.lbl.close()
         self.chessboard.reset
-        # self.close
-        # ex = GoBang()
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
