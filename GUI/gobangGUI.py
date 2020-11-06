@@ -254,7 +254,7 @@ class GoBang(QWidget):
 
         if reply == QMessageBox.Yes:  # 复位
             self.piece_now = BLACK
-            self.mouse_point.setPixmap(self.black)
+            # self.mouse_point.setPixmap(self.black)
             self.step = 0
             for piece in self.pieces:
                 piece.clear()
@@ -263,8 +263,7 @@ class GoBang(QWidget):
         else:
             self.close()
 
-
-    # 认输功能键，不知道为什么卡的厉害。人机对战的认输还没写
+    # 认输功能键
     def lose(self):
         # if self.gameStatu == False:
         #     return
@@ -278,18 +277,14 @@ class GoBang(QWidget):
         else:
             return
 
-    # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
+    # 重开
     def restart(self):
-        for i in range(15):
-            for j in range(15):
-                x, y = self.coordinate_transform_map2pixel(i, j)
-                self.chessboard.draw_xy(i,j,EMPTY)
-                self.pieces[self.step].setGeometry(x, y, 100, 100)
-        # if self.lbl != None:
-        #     self.lbl.close() 
-        self.chessboard.reset
-        # self.close
-        # ex = GoBang()
+        self.piece_now = BLACK
+        self.step = 0
+        for piece in self.pieces:
+            piece.clear()
+        self.chessboard.reset()
+        self.update()
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
