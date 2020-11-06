@@ -2,11 +2,9 @@
 # -*- coding:utf-8 -*-
 import numpy as np
 import sys
-<<<<<<< HEAD
 sys.path.append('../AI')
-=======
 sys.path.append("D:\Pyfiles\PY_gobang\AI")
->>>>>>> 51f043b9e6e66da26c1be7a3eee3a781c97103a4
+
 from aiStep import aiStep
 
 # evaluation: 棋盘评估类，给当前棋盘打分用

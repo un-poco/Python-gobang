@@ -1,21 +1,19 @@
-
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
-<<<<<<< HEAD
 import os
 sys.path.append("D:/Pyfiles/PY_gobang/AI")
 sys.path.append('D:/Git/PY_gobang/GUI/double_play')
 import MyButton
 import gobangGUI
 import doublePlayerGUI
-=======
 sys.path.append("D:\Pyfiles\PY_gobang\AI")
+
 import MyButton
 import gobangGUI
+
 import numpy as np
-import double_player_1
->>>>>>> 51f043b9e6e66da26c1be7a3eee3a781c97103a4
+
 class Mainwindow(QWidget):
 
     def __init__(self,parent = None):
@@ -53,11 +51,9 @@ class Mainwindow(QWidget):
 
     def startDoubleGame(self):
         #构建双人对战界面
-<<<<<<< HEAD
+
         self.doublePlayerGame = doublePlayerGUI.GoBang()
-=======
-        self.doublePlayerGame = double_player_1.GoBang()
->>>>>>> 51f043b9e6e66da26c1be7a3eee3a781c97103a4
+
         #绑定返回界面
         self.doublePlayerGame.backSignal.connect(self.showStartGame)
         
@@ -85,6 +81,7 @@ class Mainwindow(QWidget):
 
 if __name__ == "__main__":
     import cgitb
+
     cgitb.enable("text")
     a = QApplication(sys.argv)
     m = Mainwindow()

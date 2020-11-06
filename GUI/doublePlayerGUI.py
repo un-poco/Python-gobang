@@ -10,11 +10,11 @@ sys.path.append('D:/Git/PY_gobang/GUI/source')
 sys.path.append('D:/Git/PY_gobang/AI')
 from chessboard import ChessBoard
 import MyButton
+
 import numpy as np
 # 客户端1代码
 import socket
 import threading
-
 # 棋盘基本参数等
 WIDTH = 760
 HEIGHT = 650
@@ -31,14 +31,15 @@ WHITE = 2
 import sys
 sys.path.append(r'D:\Git\PY_gobang\GUI\double_play')
 from PyQt5 import QtCore, QtGui
+
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon, QPalette, QPainter
+
 from PyQt5.QtMultimedia import QSound
-import gobang_server
-from PyQt5 import *
+print(1)
 
-
+print(1)
 def server():
     # 执行我自己目录下的服务器
     os.system('python double_play/gobang_server.py')

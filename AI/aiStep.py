@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 from AI.search import *
-=======
+
 from search import *
->>>>>>> 51f043b9e6e66da26c1be7a3eee3a781c97103a4
 import numpy as np
 
 

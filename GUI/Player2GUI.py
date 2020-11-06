@@ -3,7 +3,6 @@
 '''
     双人对战GUI设计
 '''
-
 import sys
 import time
 sys.path.append('D:/Git/PY_gobang/GUI')
@@ -45,6 +44,7 @@ from PyQt5 import *
 # ----------------------------------------------------------------------
 # 重新定义Label类
 # ----------------------------------------------------------------------
+
 class LaBel(QLabel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -56,10 +56,10 @@ class LaBel(QLabel):
 
 class GoBang(QWidget):
     backSignal = QtCore.pyqtSignal()  # 返回信号，用来和主界面连接
-
     def __init__(self):
         super().__init__()
         self.initUI()
+        print(2)
         self.c = self.init_clent()
 
 
@@ -68,10 +68,12 @@ class GoBang(QWidget):
         c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 获取服务器ip地址 应该由界面输入 在这里直接用主机地址代替
         # host = input('please input the server IP address : ')
+        print(3)
         host = socket.gethostname()
         # 设置端口号
         port = 9999
         # 连接服务，指定主机和端口
+        print(1)
         while True:
             time.sleep(0.5)
             try:
@@ -115,7 +117,7 @@ class GoBang(QWidget):
                 pass
 
     def initUI(self):  # UI初始化
-
+        print(1)
         self.chessboard = ChessBoard()  # 棋盘类，详见chessboard.py
 
         palette1 = QPalette()  # 设置棋盘背景
