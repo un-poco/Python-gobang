@@ -23,6 +23,7 @@ PIECE = 34
 EMPTY = 0
 BLACK = 1
 WHITE = 2
+recent_place = []#用于悔棋的栈
 
 import sys
 from PyQt5 import QtCore, QtGui
@@ -48,6 +49,7 @@ class AI(QtCore.QThread):
         self.ai = searcher()
         self.ai.board = self.board
         x, y = self.ai.search(2, 2)
+        recent_place.append([x,y,WHITE])
         self.finishSignal.emit(x, y)
 
 
@@ -171,7 +173,7 @@ class GoBang(QWidget):
             if not i is None and not j is None:  # 棋子落在棋盘上，排除边缘
                 if self.chessboard.get_xy_on_logic_state(i, j) == EMPTY:  # 棋子落在空白处
                     self.draw(i, j) # 玩家棋子绘制
-
+                    recent_place.append([i,j,BLACK])
                     # ----------------------------------------------------------------------
                     # 这里要对接双人落子，我准备偷个懒，直接把ui的全部代码粘到另一个文件里，修改落子代码实现双人对战。对接的同学有好的传参方式也可以直接修改这份代码。
                     # ----------------------------------------------------------------------
@@ -291,6 +293,13 @@ class GoBang(QWidget):
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
+        last_piece = recent_place.pop()
+        #判断上一枚棋子是否是现在下棋的一方下的
+        if last_piece[2] == self.piece_now:
+            pass
+        else:
+            pass
+
         return
 
 
