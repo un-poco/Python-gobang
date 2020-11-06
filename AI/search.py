@@ -3,6 +3,34 @@ dx = [1, 1, 0, -1, -1, -1, 0, 1]
 dy = [0, 1, 1, 1, 0, -1, -1, -1]  # （dx,dy）是8个方向向量
 import numpy as np
 
+
+def finish5(state, pos, key):
+    for u in range(4):
+        sumk = 1
+        for i in range(1, 6):
+            cur = pos + [i * dx[u], i * dy[u]]
+            cur_index = tuple(cur)
+            if (cur < 0).any() or (cur > 14).any():
+                break
+            if key != state[cur_index]:
+                break
+            sumk += 1
+
+        for i in range(1, 6):
+            cur = pos + [-i * dx[u], -i * dy[u]]
+            cur_index = tuple(cur)
+            if (cur < 0).any() or (cur > 14).any():
+                break
+            if key != state[cur_index]:
+                break
+            sumk += 1
+
+        if sumk == 5:
+            return 1
+
+    return 0
+
+
 def live4(state, pos, key):
     counter = 0
     for u in range(4):  # 4个方向，每个方向最多1个活4
@@ -76,7 +104,7 @@ def chong4(state, pos, key):
         if sumk == 4:
             counter += 1
 
-    return counter
+    return counter - 2 * live4(state, pos, key)
 
 
 def live3(state, pos, key):
@@ -332,5 +360,15 @@ def live2(state, pos, key):
 
 if __name__ == '__main__':
     board = np.zeros((15, 15))
-    board[3:6, 3] = 1
-    print(live2(board, np.array([2, 3]), 1))
+    # board[3:6, 3] = 1
+    # board[3, 3] = 1
+    # board[3:6, 3] = 1
+    #board[3, 3] = 1
+    board[4:8, 3] = 1
+    board[3, 3] = 2
+
+    # board[5, 5] = 1
+    # board[6, 6] = 1
+    # board[7, 7] = 1
+    print(board)
+    print(finish5(board, np.array([9, 3]), 1))
