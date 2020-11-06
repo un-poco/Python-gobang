@@ -1,4 +1,4 @@
-from module.search import *
+from search import *
 import numpy as np
 
 

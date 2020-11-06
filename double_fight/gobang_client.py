@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 # 客户端1代码
 import socket
-from gobang_chessboard import chessboard
-# 棋子初始化的颜色
-black = 1
-white = -1
+
 
 
 def client_handle(c, t):
@@ -46,22 +43,18 @@ def changeid(t):
     if t.id == 2:
         t.id = 1
 
+def client_init_1():
 
-# pyqt界面按下双人对战按钮 跳转到双人对战界面 按下发起对战按钮 弹出输入服务器ip地址窗口
+    # 创建 socket 对象
+    c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # 获取服务器ip地址 应该由界面输入 在这里直接用
+    host = input('please input the server IP address : ')
+    host = socket.gethostname()
+    # 设置端口号
+    port = 9999
+    # 连接服务，指定主机和端口
+    c.connect((host, port))
 
-# 创建一个棋盘对象 同时初始化该客户端棋子颜色 由GUI界面输入 这里直接选择
-# 客户端1选择黑色
-t = chessboard(color=black)
-# 黑先
-t.id = 1
 
-# 创建 socket 对象
-c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# 获取服务器ip地址 应该由界面输入 在这里直接用
-host = socket.gethostname()
-# 设置端口号
-port = 9999
-# 连接服务，指定主机和端口
-c.connect((host, port))
 while True:
     client_handle(c, t)

@@ -5,12 +5,11 @@ Gobang GUI by Adrian
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
-
+sys.path.append("D:\Pyfiles\PY_gobang\AI")
 import MyButton
-import DoublePlayerGame
 import gobangGUI
 import numpy as np
-
+import double_player_1
 class Mainwindow(QWidget):
 
     
@@ -50,7 +49,7 @@ class Mainwindow(QWidget):
 
     def startDoubleGame(self):
         #构建双人对战界面
-        self.doublePlayerGame = DoublePlayerGame.DoublePlayGame()
+        self.doublePlayerGame = double_player_1.GoBang()
         #绑定返回界面
         self.doublePlayerGame.backSignal.connect(self.showStartGame)
         
