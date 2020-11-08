@@ -85,6 +85,8 @@ class GoBang(QWidget):
         return c
 
     def data_checkout(self, data):
+        print('接收数据 : ')
+        print(data)
         if data == 'r':
             self.gameover(WHITE)
         if data == 'c':
@@ -97,7 +99,7 @@ class GoBang(QWidget):
             self.update()
             return False
         if data == 'h':
-            if self.piece_now == BLACK:  # 要连续撤销两次
+            if self.piece_now == WHITE:  # 要连续撤销两次
                 self.pieces[self.step - 1].setVisible(False)
                 self.pieces[self.step - 2].setVisible(False)
                 self.step -= 2
@@ -106,6 +108,7 @@ class GoBang(QWidget):
                 current_place = recent_place.pop()
                 self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
             else:  # 要撤销一次
+
                 self.pieces[self.step - 1].setVisible(False)
                 self.step -= 1
                 current_place = recent_place.pop()
@@ -121,6 +124,7 @@ class GoBang(QWidget):
                 if self.data_checkout(data):
                     str_list = data.split(' ')
                     x, y = int(str_list[0]), int(str_list[1])
+                    self.piece_now = int(str_list[2])
                     self.draw(x, y)
                     recent_place.append([x, y, WHITE])
 
@@ -222,7 +226,7 @@ class GoBang(QWidget):
             i, j = self.coordinate_transform_pixel2map(x, y)  # 对应棋盘坐标
             if not i is None and not j is None:  # 棋子落在棋盘上，排除边缘
                 if self.chessboard.get_xy_on_logic_state(i, j) == EMPTY:  # 棋子落在空白处
-                    t1 = (str(i), ' ', str(j))
+                    t1 = (str(i), ' ', str(j), ' ', str(self.piece_now))
                     t2 = ''.join(t1)
                     # 发送棋子坐标到服务器
                     self.c.send(t2.encode('utf-8'))
@@ -240,15 +244,20 @@ class GoBang(QWidget):
 
     # 落子代码
     def draw(self, i, j):
-
+        print('绘图:')
+        print(i, j)
+        print('self.step')
+        print(self.step)
         x, y = self.coordinate_transform_map2pixel(i, j)
 
         if self.piece_now == BLACK:
             self.pieces[self.step].setPixmap(self.black)  # 放置黑色棋子
+            self.pieces[self.step].setVisible(True)
             self.piece_now = WHITE
             self.chessboard.draw_xy(i, j, BLACK)
         else:
             self.pieces[self.step].setPixmap(self.white)  # 放置白色棋子
+            self.pieces[self.step].setVisible(True)
             self.piece_now = BLACK
             self.chessboard.draw_xy(i, j, WHITE)
 
@@ -295,6 +304,7 @@ class GoBang(QWidget):
 
     # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
     def restart(self):
+        self.huiqi_flag = True
         self.piece_now = BLACK
         self.step = 0
         for piece in self.pieces:
@@ -309,21 +319,25 @@ class GoBang(QWidget):
             if self.piece_now == BLACK:  # 要连续撤销两次
                 self.pieces[self.step - 1].setVisible(False)
                 self.pieces[self.step - 2].setVisible(False)
-                self.step -= 2
+
                 current_place = recent_place.pop()
                 self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
                 current_place = recent_place.pop()
                 self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
                 self.c.send('h'.encode())  # 发送悔棋指令
                 self.huiqi_flag = False
+                self.piece_now = BLACK
+                self.step -= 2
                 print('悔棋成功')
             else: # 要撤销一次
                 self.pieces[self.step - 1].setVisible(False)
-                self.step -= 1
                 current_place = recent_place.pop()
                 self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
                 self.c.send('h'.encode())  # 发送悔棋指令
                 self.huiqi_flag = False
+                self.ai_down = True
+                self.piece_now = BLACK
+                self.step -= 1
                 print('悔棋成功')
         else:
             print('悔棋次数已用完！悔棋失败！')

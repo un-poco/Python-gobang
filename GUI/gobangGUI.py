@@ -210,10 +210,12 @@ class GoBang(QWidget):
 
         if self.piece_now == BLACK:
             self.pieces[self.step].setPixmap(self.black)  # 放置黑色棋子
+            self.pieces[self.step].setVisible(True)
             self.piece_now = WHITE
             self.chessboard.draw_xy(i, j, BLACK)
         else:
             self.pieces[self.step].setPixmap(self.white)  # 放置白色棋子
+            self.pieces[self.step].setVisible(True)
             self.piece_now = BLACK
             self.chessboard.draw_xy(i, j, WHITE)
 
@@ -278,6 +280,7 @@ class GoBang(QWidget):
     # 重开
     def restart(self):
         self.piece_now = BLACK
+        self.huiqi_flag = 1
         self.step = 0
         for piece in self.pieces:
             piece.clear()
@@ -286,14 +289,22 @@ class GoBang(QWidget):
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
-        last_piece = recent_place.pop()
-        # 判断上一枚棋子是否是现在下棋的一方下的
+        if self.huiqi_flag:
 
-        if last_piece[2] == self.piece_now:
-            pass
+            # AI的下棋速度很快 默认每次悔棋的时候都是悔去AI的棋子和自己的棋子 所有等到AI下完之后再悔棋
+
+            self.pieces[self.step - 1].setVisible(False)
+            self.pieces[self.step - 2].setVisible(False)
+
+            current_place = recent_place.pop()
+            self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+            current_place = recent_place.pop()
+            self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+            self.pieces[self.step]
+            self.huiqi_flag = 0
+            print('悔棋成功')
         else:
-            pass
-
+            print('悔棋次数已用完，悔棋失败')
         return
 
 
