@@ -1,16 +1,15 @@
 from AI.search import *
 
-from search import *
 import numpy as np
 
 
 def getScore(state, pos):
     key = 2
-    attack = 20000000 * finish5(state, pos, key) + 50001 * live4(state, pos, key) + 3001 * chong4(state, pos, key) + \
-             3001 * live3(state, pos, key) + 1001 * mian3(state, pos, key) + 501 * live2(state, pos, key)
+    attack = 100000 * finish5(state, pos, key) + 1001 * live4(state, pos, key) + 301 * chong4(state, pos, key) + \
+             301 * live3(state, pos, key) + 101 * mian3(state, pos, key) + 51 * live2(state, pos, key)
     key = 1
-    defend = 2000000 * finish5(state, pos, key) + 50000 * live4(state, pos, key) + 3000 * chong4(state, pos, key) + \
-             3000 * live3(state, pos, key) + 1000 * mian3(state, pos, key) + 500 * live2(state, pos, key)
+    defend = 10000 * finish5(state, pos, key) + 1000 * live4(state, pos, key) + 300 * chong4(state, pos, key) + \
+             300 * live3(state, pos, key) + 100 * mian3(state, pos, key) + 50 * live2(state, pos, key)
     return attack + defend
 
 

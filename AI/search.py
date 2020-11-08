@@ -1,10 +1,12 @@
-# vector = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]  # 8个方向的单位向量
 dx = [1, 1, 0, -1, -1, -1, 0, 1]
 dy = [0, 1, 1, 1, 0, -1, -1, -1]  # （dx,dy）是8个方向向量
 import numpy as np
 
 
 def finish5(state, pos, key):
+    """
+    判断在pos处落子能否成5
+    """
     for u in range(4):
         sumk = 1
         for i in range(1, 6):
@@ -32,6 +34,9 @@ def finish5(state, pos, key):
 
 
 def live4(state, pos, key):
+    """
+    计算在pos处落子形成活4的数量
+    """
     counter = 0
     for u in range(4):  # 4个方向，每个方向最多1个活4
         flag = True
@@ -71,6 +76,9 @@ def live4(state, pos, key):
 
 
 def chong4(state, pos, key):
+    """
+    计算在pos处落子形成冲4的数量
+    """
     counter = 0
     for u in range(8):  # 8个方向，每方最多1个
         flag = True
@@ -108,6 +116,9 @@ def chong4(state, pos, key):
 
 
 def live3(state, pos, key):
+    """
+    计算在pos处落子形成活3的数量
+    """
     counter = 0
 
     for u in range(4):  # 三连的活三
@@ -207,6 +218,9 @@ def live3(state, pos, key):
 
 
 def mian3(state, pos, key):
+    """
+    计算在pos处落子形成眠3的数量
+    """
     counter = 0
     for u in range(8):
         sumk = 0
@@ -242,6 +256,9 @@ def mian3(state, pos, key):
 
 
 def live2(state, pos, key):
+    """
+    计算在pos处落子形成活2的数量
+    """
     counter = 0
 
     for u in range(4):  # 二连的活二
@@ -363,7 +380,7 @@ if __name__ == '__main__':
     # board[3:6, 3] = 1
     # board[3, 3] = 1
     # board[3:6, 3] = 1
-    #board[3, 3] = 1
+    # board[3, 3] = 1
     board[4:8, 3] = 1
     board[3, 3] = 2
 
