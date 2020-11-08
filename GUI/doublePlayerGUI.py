@@ -5,6 +5,7 @@
 '''
 import sys
 import os
+
 sys.path.append('D:/Git/PY_gobang/GUI')
 sys.path.append('D:/Git/PY_gobang/GUI/source')
 sys.path.append('D:/Git/PY_gobang/AI')
@@ -15,6 +16,7 @@ import numpy as np
 # 客户端1代码
 import socket
 import threading
+
 # 棋盘基本参数等
 WIDTH = 760
 HEIGHT = 650
@@ -27,8 +29,10 @@ PIECE = 34
 EMPTY = 0
 BLACK = 1
 WHITE = 2
+recent_place = []  # 用于悔棋的栈
 
 import sys
+
 sys.path.append(r'D:\Git\PY_gobang\GUI\double_play')
 from PyQt5 import QtCore, QtGui
 
@@ -37,9 +41,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon, QPalette, QPainter
 
 from PyQt5.QtMultimedia import QSound
-print(1)
 
-print(1)
+
 def server():
     # 执行我自己目录下的服务器
     os.system('python double_play/gobang_server.py')
@@ -59,13 +62,15 @@ class LaBel(QLabel):
 
 class GoBang(QWidget):
     backSignal = QtCore.pyqtSignal()  # 返回信号，用来和主界面连接
+
     def __init__(self):
         super().__init__()
         self.initUI()
         threading.Thread(target=server).start()
         self.c = self.init_clent()
+        self.huiqi_flag = True
 
-    def init_clent(self): # 客户端初始化
+    def init_clent(self):  # 客户端初始化
         # 创建 socket 对象
         c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 获取服务器ip地址 应该由界面输入 在这里直接用主机地址代替
@@ -79,7 +84,6 @@ class GoBang(QWidget):
         t1.start()
         return c
 
-
     def data_checkout(self, data):
         if data == 'r':
             self.gameover(WHITE)
@@ -92,24 +96,37 @@ class GoBang(QWidget):
             self.chessboard.reset()
             self.update()
             return False
+        if data == 'h':
+            if self.piece_now == BLACK:  # 要连续撤销两次
+                self.pieces[self.step - 1].setVisible(False)
+                self.pieces[self.step - 2].setVisible(False)
+                self.step -= 2
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+            else:  # 要撤销一次
+                self.pieces[self.step - 1].setVisible(False)
+                self.step -= 1
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+            return False
         return True
-
 
     def client_recv(self):
         '''接收数据'''
         while True:
             try:
                 data = self.c.recv(1024).decode()
-                print(data)
                 if self.data_checkout(data):
                     str_list = data.split(' ')
                     x, y = int(str_list[0]), int(str_list[1])
                     self.draw(x, y)
+                    recent_place.append([x, y, WHITE])
+
                     self.ai_down = True  # 解锁 允许鼠标点击下棋
             except:
                 pass
-
-
 
     def initUI(self):  # UI初始化
 
@@ -128,7 +145,7 @@ class GoBang(QWidget):
         self.setMinimumSize(QtCore.QSize(WIDTH, HEIGHT))
         self.setMaximumSize(QtCore.QSize(WIDTH, HEIGHT))
 
-        self.setWindowTitle("GoBang")  # 窗口名称
+        self.setWindowTitle("GoBang_BLACK")  # 窗口名称
         self.setWindowIcon(QIcon('source/icon.ico'))  # 窗口图标
 
         # 所有按钮的图标和布局
@@ -169,12 +186,8 @@ class GoBang(QWidget):
 
         self.piece_now = BLACK  # 黑棋先行
 
-
-
         self.step = 0  # 步数
         self.x, self.y = 1000, 1000
-
-
 
         self.pieces = [LaBel(self) for i in range(225)]  # 新建棋子标签，准备在棋盘上绘制棋子
         for piece in self.pieces:
@@ -202,7 +215,6 @@ class GoBang(QWidget):
         self.drawLines(qp)
         qp.end()
 
-
     def mousePressEvent(self, e):  # 玩家1下棋
 
         if e.button() == Qt.LeftButton and self.ai_down:
@@ -215,8 +227,8 @@ class GoBang(QWidget):
                     # 发送棋子坐标到服务器
                     self.c.send(t2.encode('utf-8'))
                     self.draw(i, j)
-                    self.ai_down = False # 加锁 避免鼠标再点击
-
+                    recent_place.append([i, j, BLACK])
+                    self.ai_down = False  # 加锁 避免鼠标再点击
 
     def drawLines(self, qp):  # 绘制lines
         if self.step != 0:
@@ -273,7 +285,6 @@ class GoBang(QWidget):
             reply = QMessageBox.question(self, 'You Lost!', 'Continue?',
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-
     # 认输功能键，不知道为什么卡的厉害。人机对战的认输还没写
     def lose(self):
         self.c.send('r'.encode())
@@ -281,7 +292,6 @@ class GoBang(QWidget):
         self.backSignal.emit()
 
         self.close()
-
 
     # 重开，这个问题有点大，重新绘图我没实现。目前是把数组清空了，图没变(在上面重新画棋盘也太蠢了吧，刷新界面会比较好但是我没写出来:/)
     def restart(self):
@@ -295,6 +305,28 @@ class GoBang(QWidget):
 
     # 这个理论上要做悔棋功能，看看写代码的同学是怎么实现的。
     def returnOneStep(self):
+        if self.huiqi_flag:
+            if self.piece_now == BLACK:  # 要连续撤销两次
+                self.pieces[self.step - 1].setVisible(False)
+                self.pieces[self.step - 2].setVisible(False)
+                self.step -= 2
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+                self.c.send('h'.encode())  # 发送悔棋指令
+                self.huiqi_flag = False
+                print('悔棋成功')
+            else: # 要撤销一次
+                self.pieces[self.step - 1].setVisible(False)
+                self.step -= 1
+                current_place = recent_place.pop()
+                self.chessboard.draw_xy(current_place[0], current_place[1], 0)  # 清空对应棋子
+                self.c.send('h'.encode())  # 发送悔棋指令
+                self.huiqi_flag = False
+                print('悔棋成功')
+        else:
+            print('悔棋次数已用完！悔棋失败！')
         return
 
 
