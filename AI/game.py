@@ -1,7 +1,10 @@
 import os
 import time
 import numpy as np
-from ai import AI1Step
+import sys
+sys.path.append('../AI')
+# from ai import AI1Step
+from utils.ai import AI1Step
 """
 使用方法说明：
 首先将Gomoku实例化
@@ -23,14 +26,14 @@ class Gomoku:
 
 
     def ai_play_1step_py_python(self):
-        ai = AI1Step(self, self.cur_step, True)  # AI判断下一步执行什么操作
+        ai1 = AI1Step(self, self.cur_step, True)  # AI判断下一步执行什么操作
         st = time.time()
-        ai.search(0, [set(), set()], self.max_search_steps)  # 最远看2回合之后
+        ai1.search(0, [set(), set()], self.max_search_steps)  # 最远看2回合之后
         ed = time.time()
-        print('生成了%d个节点，用时%.4f，评价用时%.4f' % (len(ai.method_tree), ed - st, ai.t))
-        if ai.next_node_dx_list[0] == -1:
+        print('生成了%d个节点，用时%.4f，评价用时%.4f' % (len(ai1.method_tree), ed - st, ai1.t))
+        if ai1.next_node_dx_list[0] == -1:
             raise ValueError('ai.next_node_dx_list[0] == -1')
-        ai_ope = ai.method_tree[ai.next_node_dx_list[0]].ope
+        ai_ope = ai1.method_tree[ai1.next_node_dx_list[0]].ope
         if self.state[ai_ope[0]][ai_ope[1]] != 0:
             raise ValueError('self.game_map[ai_ope[0]][ai_ope[1]] = %d' % self.state[ai_ope[0]][ai_ope[1]])
         self.cur_step += 1

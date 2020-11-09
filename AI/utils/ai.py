@@ -43,7 +43,7 @@ class Node:
         for x in range(11):
             for y in range(15):
                 player_cnt = sum([self.game.state[x][y] == 1, self.game.state[x + 1][y] == 1, self.game.state[x + 2][y] == 1, self.game.state[x + 3][y] == 1, self.game.state[x + 4][y] == 1])
-                ai_cnt = sum([self.game.state[x][y] == -1, self.game.state[x + 1][y] == -1, self.game.state[x + 2][y] == -1, self.game.state[x + 3][y] == -1, self.game.state[x + 4][y] == -1])
+                ai_cnt = sum([self.game.state[x][y] == 2, self.game.state[x + 1][y] == 2, self.game.state[x + 2][y] == 2, self.game.state[x + 3][y] == 2, self.game.state[x + 4][y] == 2])
                 if player_cnt == 4 and ai_cnt == 0:
                     player_4_num += 1
                 if ai_cnt == 4 and player_cnt == 0:
@@ -51,7 +51,7 @@ class Node:
         for x in range(15):
             for y in range(11):
                 player_cnt = sum([self.game.state[x][y] == 1, self.game.state[x][y + 1] == 1, self.game.state[x][y + 2] == 1, self.game.state[x][y + 3] == 1, self.game.state[x][y + 4] == 1])
-                ai_cnt = sum([self.game.state[x][y] == -1, self.game.state[x][y + 1] == -1, self.game.state[x][y + 2] == -1, self.game.state[x][y + 3] == -1, self.game.state[x][y + 4] == -1])
+                ai_cnt = sum([self.game.state[x][y] == 2, self.game.state[x][y + 1] == 2, self.game.state[x][y + 2] == 2, self.game.state[x][y + 3] == 2, self.game.state[x][y + 4] == 2])
                 if player_cnt == 4 and ai_cnt == 0:
                     player_4_num += 1
                 if ai_cnt == 4 and player_cnt == 0:
@@ -59,7 +59,7 @@ class Node:
         for x in range(11):
             for y in range(11):
                 player_cnt = sum([self.game.state[x][y] == 1, self.game.state[x + 1][y + 1] == 1, self.game.state[x + 2][y + 2] == 1, self.game.state[x + 3][y + 3] == 1, self.game.state[x + 4][y + 4] == 1])
-                ai_cnt = sum([self.game.state[x][y] == -1, self.game.state[x + 1][y + 1] == -1, self.game.state[x + 2][y + 2] == -1, self.game.state[x + 3][y + 3] == -1, self.game.state[x + 4][y + 4] == -1])
+                ai_cnt = sum([self.game.state[x][y] == 2, self.game.state[x + 1][y + 1] == 2, self.game.state[x + 2][y + 2] == 2, self.game.state[x + 3][y + 3] == 2, self.game.state[x + 4][y + 4] == 2])
                 if player_cnt == 4 and ai_cnt == 0:
                     player_4_num += 1
                 if ai_cnt == 4 and player_cnt == 0:
@@ -67,7 +67,7 @@ class Node:
         for x in range(11):
             for y in range(11):
                 player_cnt = sum([self.game.state[x + 4][y] == 1, self.game.state[x + 3][y + 1] == 1, self.game.state[x + 2][y + 2] == 1, self.game.state[x + 1][y + 3] == 1, self.game.state[x][y + 4] == 1])
-                ai_cnt = sum([self.game.state[x + 4][y] == -1, self.game.state[x + 3][y + 1] == -1, self.game.state[x + 2][y + 2] == -1, self.game.state[x + 1][y + 3] == -1, self.game.state[x][y + 4] == -1])
+                ai_cnt = sum([self.game.state[x + 4][y] == 2, self.game.state[x + 3][y + 1] == 2, self.game.state[x + 2][y + 2] == 2, self.game.state[x + 1][y + 3] == 2, self.game.state[x][y + 4] == 2])
                 if player_cnt == 4 and ai_cnt == 0:
                     player_4_num += 1
                 if ai_cnt == 4 and player_cnt == 0:
@@ -118,50 +118,50 @@ class Node:
             for y in range(15):
                 if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == 1 and self.game.state[x + 2][y] == 1 and self.game.state[x + 3][y] == 1 and self.game.state[x + 4][y] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == -1 and self.game.state[x + 2][y] == -1 and self.game.state[x + 3][y] == -1 and self.game.state[x + 4][y] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == 2 and self.game.state[x + 2][y] == 2 and self.game.state[x + 3][y] == 2 and self.game.state[x + 4][y] == 0:
                     ai_3d_num += 1
         for x in range(15):
             for y in range(11):
                 if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == 1 and self.game.state[x][y + 2] == 1 and self.game.state[x][y + 3] == 1 and self.game.state[x][y + 4] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == -1 and self.game.state[x][y + 2] == -1 and self.game.state[x][y + 3] == -1 and self.game.state[x][y + 4] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == 2 and self.game.state[x][y + 2] == 2 and self.game.state[x][y + 3] == 2 and self.game.state[x][y + 4] == 0:
                     ai_3d_num += 1
         for x in range(11):
             for y in range(11):
                 if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == 1 and self.game.state[x + 2][y + 2] == 1 and self.game.state[x + 3][y + 3] == 1 and self.game.state[x + 4][y + 4] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == -1 and self.game.state[x + 2][y + 2] == -1 and self.game.state[x + 3][y + 3] == -1 and self.game.state[x + 4][y + 4] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == 2 and self.game.state[x + 2][y + 2] == 2 and self.game.state[x + 3][y + 3] == 2 and self.game.state[x + 4][y + 4] == 0:
                     ai_3d_num += 1
         for x in range(11):
             for y in range(11):
                 if self.game.state[x + 4][y] == 0 and self.game.state[x + 3][y + 1] == 1 and self.game.state[x + 2][y + 2] == 1 and self.game.state[x + 1][y + 3] == 1 and self.game.state[x][y + 4] == 0:
                     player_3d_num += 1
-                if self.game.state[x + 4][y] == 0 and self.game.state[x + 3][y + 1] == -1 and self.game.state[x + 2][y + 2] == -1 and self.game.state[x + 1][y + 3] == -1 and self.game.state[x][y + 4] == 0:
+                if self.game.state[x + 4][y] == 0 and self.game.state[x + 3][y + 1] == 2 and self.game.state[x + 2][y + 2] == 2 and self.game.state[x + 1][y + 3] == 2 and self.game.state[x][y + 4] == 0:
                     ai_3d_num += 1
         # 4.2. xoxoox或xooxox的形式
         for x in range(10):
             for y in range(15):
                 if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == 1 and ((self.game.state[x + 2][y] == 1) ^ (self.game.state[x + 3][y] == 1)) and self.game.state[x + 4][y] == 1 and self.game.state[x + 5][y] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == -1 and ((self.game.state[x + 2][y] == -1) ^ (self.game.state[x + 3][y] == -1)) and self.game.state[x + 4][y] == -1 and self.game.state[x + 5][y] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x + 1][y] == 2 and ((self.game.state[x + 2][y] == 2) ^ (self.game.state[x + 3][y] == 2)) and self.game.state[x + 4][y] == 2 and self.game.state[x + 5][y] == 0:
                     ai_3d_num += 1
         for x in range(15):
             for y in range(10):
                 if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == 1 and ((self.game.state[x][y + 2] == 1) ^ (self.game.state[x][y + 3] == 1)) and self.game.state[x][y + 4] == 1 and self.game.state[x][y + 5] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == -1 and ((self.game.state[x][y + 2] == -1) ^ (self.game.state[x][y + 3] == -1)) and self.game.state[x][y + 4] == -1 and self.game.state[x][y + 5] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x][y + 1] == 2 and ((self.game.state[x][y + 2] == 2) ^ (self.game.state[x][y + 3] == 2)) and self.game.state[x][y + 4] == 2 and self.game.state[x][y + 5] == 0:
                     ai_3d_num += 1
         for x in range(10):
             for y in range(10):
                 if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == 1 and ((self.game.state[x + 2][y + 2] == 1) ^ (self.game.state[x + 3][y + 3] == 1)) and self.game.state[x + 4][y + 4] == 1 and self.game.state[x + 5][y + 5] == 0:
                     player_3d_num += 1
-                if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == -1 and ((self.game.state[x + 2][y + 2] == -1) ^ (self.game.state[x + 3][y + 3] == -1)) and self.game.state[x + 4][y + 4] == -1 and self.game.state[x + 5][y + 5] == 0:
+                if self.game.state[x][y] == 0 and self.game.state[x + 1][y + 1] == 2 and ((self.game.state[x + 2][y + 2] == 2) ^ (self.game.state[x + 3][y + 3] == 2)) and self.game.state[x + 4][y + 4] == 2 and self.game.state[x + 5][y + 5] == 0:
                     ai_3d_num += 1
         for x in range(10):
             for y in range(10):
                 if self.game.state[x + 5][y] == 0 and self.game.state[x + 4][y + 1] == 1 and ((self.game.state[x + 3][y + 2] == 1) ^ (self.game.state[x + 2][y + 3] == 1)) and self.game.state[x + 1][y + 4] == 1 and self.game.state[x][y + 5] == 0:
                     player_3d_num += 1
-                if self.game.state[x + 5][y] == 0 and self.game.state[x + 4][y + 1] == -1 and ((self.game.state[x + 3][y + 2] == -1) ^ (self.game.state[x + 2][y + 3] == -1)) and self.game.state[x + 1][y + 4] == -1 and self.game.state[x][y + 5] == 0:
+                if self.game.state[x + 5][y] == 0 and self.game.state[x + 4][y + 1] == 2 and ((self.game.state[x + 3][y + 2] == 2) ^ (self.game.state[x + 2][y + 3] == 2)) and self.game.state[x + 1][y + 4] == 2 and self.game.state[x][y + 5] == 0:
                     ai_3d_num += 1
 
         # 6. 如果能够连成四三，则记为80分
@@ -276,7 +276,7 @@ class Node:
                                 around_cnt += 1
                     player_score_num += score_by_num_around[around_cnt] - abs(x - 7) - abs(y - 7)
                     player_cnt += 1
-                if self.game.state[x][y] == -1:
+                if self.game.state[x][y] == 2:
                     around_cnt = 0
                     for x0 in range(x - 1, x + 2):
                         for y0 in range(y - 1, y + 2):
@@ -305,7 +305,7 @@ class AI1Step:
         node_init.score = -np.inf
         self.player_first = player_first
         self.method_tree = [node_init]  # 策略数
-        self.next_node_dx_list = [-1]  # 每个节点的下一步节点列表。-1表示这个节点为最终节点
+        self.next_node_dx_list = []  # 每个节点的下一步节点列表。-1表示这个节点为最终节点
         self.child_node_dx_list = [[]]  # 每个节点的子节点列表
         self.ope_hist_list = []  # 纪录此前遍历过的操作列表
         self.t = 0
@@ -335,12 +335,12 @@ class AI1Step:
                 if self.method_tree[cur_node_dx].depth % 2 == 0:  # 轮到玩家出
                     i_game.state[cell[0]][cell[1]] = 1
                 else:  # 轮到电脑出
-                    i_game.state[cell[0]][cell[1]] = -1
+                    i_game.state[cell[0]][cell[1]] = 2
             else:
                 if self.method_tree[cur_node_dx].depth % 2 == 0:  # 轮到电脑出
                     i_game.state[cell[0]][cell[1]] = 1
                 else:  # 轮到玩家出
-                    i_game.state[cell[0]][cell[1]] = -1
+                    i_game.state[cell[0]][cell[1]] = 2
             if max_depth >= 2 and len(ope_list) >= 2:  # 对于非最终层的节点，不急于立即算出分数
                 node_new = Node(i_game, cell, self.method_tree[cur_node_dx].depth + 1, self.method_tree[cur_node_dx].alpha, self.method_tree[cur_node_dx].beta, False, self.player_first)
             else:
