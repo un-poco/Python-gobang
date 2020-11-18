@@ -73,6 +73,7 @@ class Gomoku:
         self.cur_step += 2
         # print(self.cur_step)
         # self.state[ai_ope[0]][ai_ope[1]] = 2
+
         return [ai_ope[0], ai_ope[1]]
 
 

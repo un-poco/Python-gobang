@@ -32,10 +32,14 @@ class Node:
         # 1. 如果能够连成五子，则记为100分
         res = self.game.game_result()
         # print(np.array(self.game.state))
+
+
+
         if res == 2:
             return 100
         elif res == 1:
             return -100
+
         # 2. 判断玩家和电脑的四子的数目（需要保证：不是已经被堵死的四子）
         ai_4_num = 0
         player_4_num = 0
@@ -50,7 +54,8 @@ class Node:
         for x in range(15):
             for y in range(11):
                 player_cnt = sum([self.game.state[x][y] == 1, self.game.state[x][y + 1] == 1, self.game.state[x][y + 2] == 1, self.game.state[x][y + 3] == 1, self.game.state[x][y + 4] == 1])
-                ai_cnt = sum([self.game.state[x][y] == 2, self.game.state[x][y + 1] == 2, self.game.state[x][y + 2] == -2, self.game.state[x][y + 3] == 2, self.game.state[x][y + 4] == 2])
+
+                ai_cnt = sum([self.game.state[x][y] == 2, self.game.state[x][y + 1] == 2, self.game.state[x][y + 2] == 2, self.game.state[x][y + 3] == 2, self.game.state[x][y + 4] == 2])
                 if player_cnt == 4 and ai_cnt == 0:
                     player_4_num += 1
                 if ai_cnt == 4 and player_cnt == 0:
@@ -304,7 +309,9 @@ class AI1Step:
         node_init.score = -np.inf
         self.player_first = player_first
         self.method_tree = [node_init]  # 策略数
+
         self.next_node_dx_list = [-1]  # 每个节点的下一步节点列表。-1表示这个节点为最终节点
+
         self.child_node_dx_list = [[]]  # 每个节点的子节点列表
         self.ope_hist_list = []  # 纪录此前遍历过的操作列表
         self.t = 0
@@ -318,7 +325,6 @@ class AI1Step:
         """
         # 1.首先确认什么地方可以落子。落子的条件是：这个格子必须为空，周围8格内必须有至少一个棋子
         ope_list = set()
-        # print(np.array(self.method_tree[cur_node_dx].game.state))
         for x in range(15):
             for y in range(15):
                 if self.method_tree[cur_node_dx].game.state[x][y] != 0:
@@ -331,17 +337,13 @@ class AI1Step:
         for cell in ope_list:
             # 2.1 创建一个子节点，并计算这个子节点的分数
             i_game = copy.deepcopy(self.method_tree[cur_node_dx].game)
-            # print(np.array(i_game.state))
+
             if self.player_first:
                 if self.method_tree[cur_node_dx].depth % 2 == 0:  # 轮到玩家出
                     i_game.state[cell[0]][cell[1]] = 1
                 else:  # 轮到电脑出
                     i_game.state[cell[0]][cell[1]] = 2
-            # else:
-            #     if self.method_tree[cur_node_dx].depth % 2 == 0:  # 轮到电脑出
-            #         i_game.state[cell[0]][cell[1]] = 1
-            #     else:  # 轮到玩家出
-            #         i_game.state[cell[0]][cell[1]] = 2
+
             if max_depth >= 2 and len(ope_list) >= 2:  # 对于非最终层的节点，不急于立即算出分数
                 node_new = Node(i_game, cell, self.method_tree[cur_node_dx].depth + 1, self.method_tree[cur_node_dx].alpha, self.method_tree[cur_node_dx].beta, False, self.player_first)
             else:

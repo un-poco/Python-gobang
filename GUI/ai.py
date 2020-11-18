@@ -540,5 +540,6 @@ class searcher(object):
             row, col = aiStep(np.array(state))
 
         # print("row is ", row, " col is ", col)
+
         return row, col
         # return score, row, col
