@@ -67,8 +67,8 @@ class GoBang(QWidget):
         # 创建 socket 对象
         c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 获取服务器ip地址 应该由界面输入 在这里直接用主机地址代替
-        host = input('please input the server IP address : ')
-
+        # host = input('please input the server IP address : ')
+        host = socket.gethostname()
         # 设置端口号
         port = 9999
         # 连接服务，指定主机和端口
