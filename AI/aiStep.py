@@ -1,4 +1,6 @@
-from AI.search import *
+import sys
+sys.path.append('../AI')
+from search import *
 
 import numpy as np
 

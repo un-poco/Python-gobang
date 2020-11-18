@@ -4,8 +4,10 @@ import numpy as np
 import sys
 sys.path.append('../AI')
 sys.path.append("D:\Pyfiles\PY_gobang\AI")
-
+from game import *
 from aiStep import aiStep
+
+METHOD = 0 #METHOD为1表示枚举法，METHOD为0表示alpha-beta剪枝算法
 
 # evaluation: 棋盘评估类，给当前棋盘打分用
 # ----------------------------------------------------------------------
@@ -450,6 +452,7 @@ class searcher(object):
     def __init__(self):
         # self.evaluator = evaluation()
         self.board = [[0 for n in range(15)] for i in range(15)]
+        self.gomoku = Gomoku()  # 将类实例化
         # self.board = np.zeros((15,15))
         # self.gameover = 0
         # self.overvalue = 0
@@ -529,7 +532,13 @@ class searcher(object):
         #     score = self.__search(turn, 1, -0x7fffffff, 0x7fffffff)
         # row, col = self.bestmove
         state = self.board
-        row, col = aiStep(np.array(state))
-        print("row is ", row, " col is ", col)
+        # state = np.array(state).transpose(1,0)
+        '''枚举法'''
+        if METHOD == 0:
+            row, col = self.gomoku.ai_play_1step(state)
+        else:
+            row, col = aiStep(np.array(state))
+
+        # print("row is ", row, " col is ", col)
         return row, col
         # return score, row, col
